@@ -119,8 +119,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         # Partition args by spaces
-        args = args.partition(" ")[0] # split args into words
-        c_name = args[0] # c_name = class_name - first argument
+        args = args.partition(" ")[0]  # split args into words
+        c_name = args[0]  # c_name = class_name - first argument
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
@@ -129,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
 
         # args[i] should increment by 2 each time (to avoid spaces)
         # or maybe just code it so the empty spaces dont crash, might be easier
-        for values in args[]:
+        for values in args:
             key, value = values.partition('=')[0], values.partition('=')[2]
             print(f"{key}{value}")
         storage.save()
