@@ -124,21 +124,20 @@ class HBNBCommand(cmd.Cmd):
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        parameters = {} # have to add this to the object created
+        new_instance = HBNBCommand.classes[c_name]() # does parameters go in here?
         for params in args[1:]:
             params = params.split('=')
-            # print(f"Params = {params}")
             key = params[0]
             value = params[1]
             if value[0] == '"':
                 value = str(value[1:-1])
+                value = value.replace("_", " ")
+                value = value.replace('"', '\"')
             elif value.find(".") != -1:
                 value = float(value)
             else:
                 value = int(value)
-            parameters[key] = value
-        # print(parameters) # test remove later
-        new_instance = HBNBCommand.classes[c_name](parameters) # does parameters go in here?
+            setattr(new_instance, key, value)
         storage.save()
         print(new_instance.id)
         storage.save()
