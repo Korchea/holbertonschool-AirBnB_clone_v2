@@ -19,16 +19,16 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] == '}'\
+                    if pline[0] is '{' and pline[-1] is '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,27 +118,20 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        # divide args into class name and parameters
-        args = args.split(" ")
-        c_name = args[0]  # c_name = class name
+        # Partition args by spaces
+        args = args.partition(" ")[0]  # split args into words
+        c_name = args[0]  # c_name = class_name - first argument
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[c_name]()
-        # All values after class name
-        for params in args[1:]:
-            params = params.split('=')
-            key = params[0]
-            value = params[1]
-            if value[0] == '"':  # if has quotes around it, is string
-                value = str(value[1:-1])  # remove quotes around string
-                value = value.replace("_", " ")
-                value = value.replace('"', '\"')
-            elif value.find(".") != -1:  # if has decimal point, float
-                value = float(value)
-            else:  # otherwise, int
-                value = int(value)
-            setattr(new_instance, key, value)
+        new_instance = HBNBCommand.classes[args]()
+        # Parameters set here
+
+        # args[i] should increment by 2 each time (to avoid spaces)
+        # or maybe just code it so the empty spaces dont crash, might be easier
+        for values in args:
+            key, value = values.partition('=')[0], values.partition('=')[2]
+            print(f"{key}{value}")
         storage.save()
         print(new_instance.id)
         storage.save()
