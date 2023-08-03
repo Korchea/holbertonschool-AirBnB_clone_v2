@@ -23,7 +23,7 @@ class State(BaseModel, Base):
         citiesInState = []
         result = []
         for key in storage.all():
-            city = key.remplace('.', ' ')
+            city = key.replace('.', ' ')
             city = shlex.split(city)
             if city[0] == "City":
                 citiesInState.append(storage.all[key])

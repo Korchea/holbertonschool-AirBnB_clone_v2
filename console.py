@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is '}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,21 +118,28 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        # Partition args by spaces
-        args = args.partition(" ")[0]  # split args into words
-        c_name = args[0]  # c_name = class_name - first argument
+        # divide args into class name and parameters
+        args = args.split(" ")
+        c_name = args[0]  # c_name = class name
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        # Parameters set here
-
-        # args[i] should increment by 2 each time (to avoid spaces)
-        # or maybe just code it so the empty spaces dont crash, might be easier
-        for values in args:
-            key, value = values.partition('=')[0], values.partition('=')[2]
-            print(f"{key}{value}")
-        storage.save()
+        new_instance = HBNBCommand.classes[c_name]()
+        # All values after class name
+        for params in args[1:]:
+            params = params.split('=')
+            key = params[0]
+            value = params[1]
+            if value[0] == '"':  # if has quotes around it, is string
+                value = str(value[1:-1])  # remove quotes around string
+                value = value.replace("_", " ")
+                value = value.replace('"', '\"')
+            elif value.find(".") != -1:  # if has decimal point, float
+                value = float(value)
+            else:  # otherwise, int
+                value = int(value)
+            setattr(new_instance, key, value)
+        storage.new(new_instance)  # wont add obj to database for commit othrws
         print(new_instance.id)
         storage.save()
 
@@ -211,18 +218,28 @@ class HBNBCommand(cmd.Cmd):
         """ Shows all objects, or all objects of a class"""
         print_list = []
 
+        # if args:
+        #     args = args.split(' ')[0]  # remove possible trailing args
+        #     if args not in HBNBCommand.classes:
+        #         print("** class doesn't exist **")
+        #         return
+        #     for k, v in storage.all(args):
+        #         if k.split('.')[0] == args:
+        #             print_list.append(str(v))
+        # else:
+        #     for k, v in storage.all():
+        #         print_list.append(str(v))
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all(args).items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
-
         print(print_list)
 
     def help_all(self):
@@ -282,7 +299,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -290,10 +307,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg

@@ -2,10 +2,12 @@
 """This module defines a class to manage database storage for hbnb clone"""
 import json
 from os import environ
+from os import getenv
 import sqlalchemy as db
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
+from models.base_model import BaseModel
 from models.amenity import Amenity
 from models.base_model import Base
 from models.city import City
@@ -23,33 +25,40 @@ class DBStorage():
     def __init__(self):
         """"Initializes Instance Values"""
         self.__engine = db.create_engine("mysql+mysqldb://{}:{}@{}/{}".format(
-            environ.HBNB_MYSQL_USER,
-            environ.HBNB_MYSQL_PWD,
-            environ.HBNB_MYSQL_HOST,
-            environ.HBNB_MYSQL_DB,
+            environ['HBNB_MYSQL_USER'],
+            environ['HBNB_MYSQL_PWD'],
+            environ['HBNB_MYSQL_HOST'],
+            environ['HBNB_MYSQL_DB'],
             pool_pre_ping=True))
-        if environ.HBNB_ENV == 'test':
+        if getenv("HBNB_ENV") == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Queries current db all objects/all objects of class name"""
-        classes = ["BaseModel", "City", "Place",
-                   "Amenity", "Review", "State", "User"]
+        classes = [BaseModel, City, Place,
+                   Amenity, Review, State, User]
+
+        # if cls
+        # for instance in self.__session.query(eval(cls)).all():
+        #
+        #  key - class.id (State.9128412398471923874123)
+        #  value - {name: california, id: 19283749123874891234 datetime: ayer}
+        #  dict.append(key: value)
+        # appendamos entonces {
+        # {california.12412341234 : {name: california, id: 412341234, datetime: hoy}
+        # }
+
+        dictionary = {}
         if cls:
-            results = self.__session.query(cls).all()
-            dictionary = {}
-            key = ""
-            for result in results:
-                key = str(result.name) + '.' + str(result.id)
-                dictionary.update({key: result})
-            return dictionary
+            for result in self.__session.query(eval(cls)).all():
+                key = "{}.{}".format(type(result).__name__, result.id)
+                dictionary[key] = result
         else:
-            for clas in classes:
-                # loop query through all 7 possible classes
-                results = self.__session.query(clas).all()
-                key = str(results.name) + '.' + str(results.id)
-                dictionary.update({key: result})
-            return dictionary
+            for cla in classes:
+                for result in self.__session.query(eval(cla)).all():
+                    key = "{}.{}".format(result.__name__, result.id)
+                    dictionary[key] = result
+        return dictionary
 
     def new(self, obj):
         """Adds the object to current database session"""
