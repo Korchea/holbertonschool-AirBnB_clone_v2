@@ -38,15 +38,14 @@ class Place(BaseModel, Base):
     else:
         @property
         def reviews(self):
+            """"Returns cities that share state.id"""
             from models import storage
-            reviews = []
-            for key, value in storage.__objects.items():
-                splited_key = key.split('.')
-                if splited_key[0] == 'Review':
-                    reviews.append(value)
-            filtered_reviews = list(
-                filter(lambda x: x.place_id == self.id), reviews)
-            return filtered_reviews
+
+            reviewsOfPlace = []
+            for object in storage.all():
+                if object.__class__.__name__ == 'Review':
+                    if object.place_id == self.id:
+                        reviewsOfPlace.append(object)
 
         @property
         def amenities(self):
