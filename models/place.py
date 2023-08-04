@@ -4,7 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from os import getenv
-from models.amenity import Amenity
+import models
 
 
 # Algo de many-to-many hecho
