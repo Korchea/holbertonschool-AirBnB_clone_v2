@@ -50,7 +50,15 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            return self.amenity_ids
+            from models import storage
+            amenities = []
+            for key, value in storage.__objects.items():
+                splited_key = key.split('.')
+                if splited_key[0] == 'Amenity':
+                    amenities.append(value)
+            filtered_amenities = list(
+                filter(lambda x: x.place_id == self.id), amenities)
+            return filtered_amenities
 
         @amenities.setter
         def amenities(self, obj=None):
