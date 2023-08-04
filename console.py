@@ -19,16 +19,16 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -119,8 +119,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         # divide args into class name and parameters
-        args = args.split(" ")
-        c_name = args[0] # c_name = class name
+        args = args.split()
+        c_name = args[0]  # c_name = class name
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
@@ -130,16 +130,17 @@ class HBNBCommand(cmd.Cmd):
             params = params.split('=')
             key = params[0]
             value = params[1]
-            if value[0] == '"': # if has quotes around it, is string
-                value = str(value[1:-1]) # remove quotes around string
+            if value[0] == '"':  # if has quotes around it, is string
+                value = str(value[1:-1])  # remove quotes around string
                 value = value.replace("_", " ")
                 value = value.replace('"', '\"')
-            elif value.find(".") != -1: # if has decimal point, float
+            elif value.find(".") != -1:  # if has decimal point, float
                 value = float(value)
-            else: # otherwise, int
+            else:  # otherwise, int
                 value = int(value)
             setattr(new_instance, key, value)
-        storage.save()
+        # wont add obj to database for commit othrws
+        new_instance.save()
         print(new_instance.id)
         storage.save()
 
@@ -204,7 +205,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -223,13 +224,12 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all(args).items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
-
         print(print_list)
 
     def help_all(self):
@@ -336,6 +336,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

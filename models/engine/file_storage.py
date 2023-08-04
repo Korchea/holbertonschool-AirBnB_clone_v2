@@ -15,7 +15,6 @@ class FileStorage:
         else:
             emptyList = {}
             for k, v in FileStorage.__objects.items():
-                # print(f"{FileStorage.__objects[k].__class__} ---- {cls}")
                 if FileStorage.__objects[k].__class__ == cls:
                     emptyList[k] = str(v)
             return (emptyList)
@@ -44,10 +43,10 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
