@@ -6,7 +6,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from os import getenv
 
 
-# Algo de many-to-many hecho
 place_amenity = Table('place_amenity', Base.metadata,
                       Column('place_id', String(60), ForeignKey(
                           'place.id'), primary_key=True, nullable=False),
@@ -50,18 +49,9 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            from models import storage
-            amenities = []
-            for key, value in storage.__objects.items():
-                splited_key = key.split('.')
-                if splited_key[0] == 'Amenity':
-                    amenities.append(value)
-            filtered_amenities = list(
-                filter(lambda x: x.place_id == self.id), amenities)
-            return filtered_amenities
+            return self.amenity_ids
 
         @amenities.setter
         def amenities(self, obj=None):
-            if obj:
-                if obj.__class__.__name__ == 'Amenity':
-                    self.amenity_ids.append(obj.id)
+            if type(obj) == 'Amenity' and obj.id not in self.amenity_ids:
+                self.amenity_ids.append(obj.id)
