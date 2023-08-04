@@ -3,6 +3,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
+from os import getenv
 
 
 # Algo de many-to-many hecho
@@ -28,16 +29,17 @@ class Place(BaseModel, Base):
     latitude = Column(Float)  # 0.0
     longitude = Column(Float)  # 0.0
     amenity_ids = []  # No longer in use in db
-    # reviews = relationship(
-    #     "Review", cascade='all, delete, delete-orphan', backref="place")
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        reviews = relationship(
+            "Review", cascade='all, delete, delete-orphan', backref="place")
+    else:
+        @property
+        def reviews(self):
+            """"Returns cities that share state.id"""
+            from models import storage
 
-    # @property
-    # def reviews(self):
-    #     """"Returns cities that share state.id"""
-    #     from models import storage
-
-    #     reviewsOfPlace = []
-    #     for object in storage.all():
-    #         if object.__class__.__name__ == 'Review':
-    #             if object.place_id == self.id:
-    #                 reviewsOfPlace.append(object)
+            reviewsOfPlace = []
+            for object in storage.all():
+                if object.__class__.__name__ == 'Review':
+                    if object.place_id == self.id:
+                        reviewsOfPlace.append(object)
