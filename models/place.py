@@ -4,7 +4,6 @@ from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from os import getenv
-import models
 
 
 # Algo de many-to-many hecho
@@ -55,5 +54,6 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, obj=None):
-            if type(obj) is Amenity and obj.id not in self.amenity_ids:
-                self.amenity_ids.append(obj.id)
+            if obj:
+                if obj.__class__.__name__ == 'Amenity':
+                    self.amenity_ids.append(obj.id)
