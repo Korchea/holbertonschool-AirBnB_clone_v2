@@ -1,11 +1,17 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 
 
-class Place(BaseModel):
+# Algo de many-to-many hecho
+place_amenity = Table('association', Base.metadata,
+    Column('place_id', ForeignKey('place.id')),
+    Column('amenity_id', ForeignKey('amenity.id'))
+)
+
+class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
     city_id = Column(String(60), ForeignKey(
