@@ -4,13 +4,16 @@ from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from os import getenv
+from models.amenity import Amenity
 
 
 # Algo de many-to-many hecho
-# place_amenity = Table('association', Base.metadata,
-#                       Column('place_id', ForeignKey('place.id')),
-#                       Column('amenity_id', ForeignKey('amenity.id'))
-#                       )
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60), ForeignKey(
+                          'place.id'), primary_key=True, nullable=False),
+                      Column('amenity_id', String(60), ForeignKey(
+                          'amenity.id'), primary_key=True, nullable=False)
+                      )
 
 
 class Place(BaseModel, Base):
@@ -32,6 +35,8 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") == "db":
         reviews = relationship(
             "Review", cascade='all, delete, delete-orphan', backref="place")
+        amenities = relationship(
+            "Amenity", secondary=place_amenity, backref="places_amenities", viewonly=False)
     else:
         @property
         def reviews(self):
@@ -43,3 +48,12 @@ class Place(BaseModel, Base):
                 if object.__class__.__name__ == 'Review':
                     if object.place_id == self.id:
                         reviewsOfPlace.append(object)
+
+        @property
+        def amenities(self):
+            return self.amenity_ids
+
+        @amenities.setter
+        def amenities(self, obj=None):
+            if type(obj) is Amenity and obj.id not in self.amenity_ids:
+                self.amenity_ids.append(obj.id)
