@@ -119,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         # divide args into class name and parameters
-        args = args.split(" ")
+        args = args.split()
         c_name = args[0]  # c_name = class name
         if c_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
@@ -139,7 +139,8 @@ class HBNBCommand(cmd.Cmd):
             else:  # otherwise, int
                 value = int(value)
             setattr(new_instance, key, value)
-        storage.new(new_instance)  # wont add obj to database for commit othrws
+        # wont add obj to database for commit othrws
+        new_instance.save()
         print(new_instance.id)
         storage.save()
 
@@ -218,17 +219,6 @@ class HBNBCommand(cmd.Cmd):
         """ Shows all objects, or all objects of a class"""
         print_list = []
 
-        # if args:
-        #     args = args.split(' ')[0]  # remove possible trailing args
-        #     if args not in HBNBCommand.classes:
-        #         print("** class doesn't exist **")
-        #         return
-        #     for k, v in storage.all(args):
-        #         if k.split('.')[0] == args:
-        #             print_list.append(str(v))
-        # else:
-        #     for k, v in storage.all():
-        #         print_list.append(str(v))
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:

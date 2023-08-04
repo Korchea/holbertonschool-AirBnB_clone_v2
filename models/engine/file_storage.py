@@ -15,7 +15,6 @@ class FileStorage:
         else:
             emptyList = {}
             for k, v in FileStorage.__objects.items():
-                # print(f"{FileStorage.__objects[k].__class__} ---- {cls}")
                 if FileStorage.__objects[k].__class__ == cls:
                     emptyList[k] = str(v)
             return (emptyList)

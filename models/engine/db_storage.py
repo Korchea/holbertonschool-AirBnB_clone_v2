@@ -38,16 +38,6 @@ class DBStorage():
         classes = [BaseModel, City, Place,
                    Amenity, Review, State, User]
 
-        # if cls
-        # for instance in self.__session.query(eval(cls)).all():
-        #
-        #  key - class.id (State.9128412398471923874123)
-        #  value - {name: california, id: 19283749123874891234 datetime: ayer}
-        #  dict.append(key: value)
-        # appendamos entonces {
-        # {california.12412341234 : {name: california, id: 412341234, datetime: hoy}
-        # }
-
         dictionary = {}
         if cls:
             for result in self.__session.query(eval(cls)).all():
