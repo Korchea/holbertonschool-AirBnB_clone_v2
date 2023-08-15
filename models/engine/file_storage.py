@@ -67,3 +67,7 @@ class FileStorage:
             objKey = objClass + "." + str(obj.id)
             if objKey in objlist:
                 objlist.pop(objKey)
+
+    def close(self):
+        """Call the function reload"""
+        self.reload()
