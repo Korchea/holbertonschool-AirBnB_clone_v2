@@ -29,11 +29,9 @@ def say_C_text(text):
 
 
 @app.route("/python/<text>")
-def say_python_text(text):
+def say_python_text(text="is cool"):
     """Return a message"""
-    if not text:
-        txt = "is cool"
-    else:
+    if text is not "is cool":
         txt = text.replace('_', ' ')
     return "Python {}".format(txt)
 
