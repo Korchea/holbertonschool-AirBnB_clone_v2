@@ -4,7 +4,7 @@
     Returns:
         Str: Hello HBNB
 """
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -45,23 +45,7 @@ def say_is_number(n):
 @app.route("/number_template/<int:n>")
 def say_HTML_page(n):
     """Return a HTML page"""
-    f = open('5-number.html', 'w')
-    # the html code which will go in the file GFG.html
-    html_template = """
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <title>HBNB</title>
-        </head>
-        <body>
-            <h1>Number: {}</h1>
-        </body>
-    </html>
-    """.format(n)
-
-    # writing the code into the file
-    f.write(html_template)
-    return f
+    return render_template("5-number.html", number=n)
 
 
 if __name__ == "__main__":
