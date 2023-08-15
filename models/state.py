@@ -18,18 +18,12 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
-        """Returns cities that share state.id"""
         from models import storage
-        import shlex
-
-        citiesInState = []
-        result = []
-        for key in storage.all():
-            city = key.replace('.', ' ')
-            city = shlex.split(city)
-            if city[0] == "City":
-                citiesInState.append(storage.all[key])
-        for cities in citiesInState:
-            if cities.state_id == self.id:
-                result.append(cities)
-        return result
+        lista = []
+        for x, y in storage._FileStorage__objects.items():
+            split = x.split(".")
+            if split[0] == "City":
+                lista.append(y)
+        filt = list(
+            filter(lambda a: a.state_id == self.id, lista))
+        return filt

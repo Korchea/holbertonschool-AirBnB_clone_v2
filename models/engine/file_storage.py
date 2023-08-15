@@ -9,15 +9,16 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns the list of objects of one type of class."""
-        if cls is None:
-            return FileStorage.__objects
+        """Returns a dictionary of models currently in storage"""
+        if cls is not None:
+            temp = {}
+            for key, value in FileStorage.__objects.items():
+                a = key.split('.')
+                if a[0] in str(cls):
+                    temp[key] = value
+            return temp
         else:
-            emptyList = {}
-            for k, v in FileStorage.__objects.items():
-                if FileStorage.__objects[k].__class__ == cls:
-                    emptyList[k] = str(v)
-            return (emptyList)
+            return FileStorage.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
