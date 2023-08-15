@@ -28,6 +28,7 @@ def say_C_text(text):
     return "C {}".format(txt)
 
 
+@app.route("/python/")
 @app.route("/python/<text>")
 def say_python_text(text="is cool"):
     """Return a message"""
