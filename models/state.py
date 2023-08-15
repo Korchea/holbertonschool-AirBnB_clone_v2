@@ -11,20 +11,25 @@ from os import getenv
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = 'states'
-    if getenv('HBNB_TYPE_STORAGE') == 'db':
-        name = Column(String(128), nullable=False)
-        cities = relationship("City", backref="states",
-                              cascade="all, delete, delete-orphan")
-    else:
-        name = ""
+    name = Column(String(128), nullable=False)
+    cities = relationship("City", backref="states",
+                          cascade="all, delete, delete-orphan")
+    if getenv('HBNB_TYPE_STORAGE') != 'db':
 
         @property
         def cities(self):
-            """Getter for FileStorage """
-            from models.city import City    # import here to avoid circular import
+            """Returns cities that share state.id"""
             from models import storage
-            cities_list = []
-            for city in storage.all(City).values():
-                if city.state_id == self.id:
-                    cities_list.append(city)
-            return cities_list
+            import shlex
+
+            citiesInState = []
+            result = []
+            for key in storage.all():
+                city = key.replace('.', ' ')
+                city = shlex.split(city)
+                if city[0] == "City":
+                    citiesInState.append(storage.all[key])
+            for cities in citiesInState:
+                if cities.state_id == self.id:
+                    result.append(cities)
+            return result
