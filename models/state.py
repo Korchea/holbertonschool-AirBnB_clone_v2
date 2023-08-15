@@ -11,24 +11,27 @@ from os import getenv
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", backref="states",
-                          cascade="all, delete, delete-orphan")
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", backref="state",
+                              cascade="all, delete, delete-orphan")
+    else:
+        name = ""
 
-    @property
-    def cities(self):
-        """Returns cities that share state.id"""
-        from models import storage
-        import shlex
+        @property
+        def cities(self):
+            """Returns cities that share state.id"""
+            from models import storage
+            import shlex
 
-        citiesInState = []
-        result = []
-        for key in storage.all():
-            city = key.replace('.', ' ')
-            city = shlex.split(city)
-            if city[0] == "City":
-                citiesInState.append(storage.all[key])
-        for cities in citiesInState:
-            if cities.state_id == self.id:
-                result.append(cities)
-        return result
+            citiesInState = []
+            result = []
+            for key in storage.all():
+                city = key.replace('.', ' ')
+                city = shlex.split(city)
+                if city[0] == "City":
+                    citiesInState.append(storage.all[key])
+            for cities in citiesInState:
+                if cities.state_id == self.id:
+                    result.append(cities)
+            return result
