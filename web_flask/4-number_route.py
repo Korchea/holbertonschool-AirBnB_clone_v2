@@ -37,7 +37,7 @@ def say_python_text(text="is cool"):
 
 
 @app.route("/number/<int:n>")
-def say_python_text(n):
+def say_is_number(n):
     """Return a message"""
     return "{} is a number".format(n)
 
