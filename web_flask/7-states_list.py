@@ -5,6 +5,8 @@
         Str: Hello HBNB
 """
 from flask import Flask, render_template
+from models.state import State
+from models import storage
 
 app = Flask(__name__)
 
@@ -16,14 +18,10 @@ def teardown(exept):
     storage.close()
 
 
-@app.route("/states_list", strict_slashes=False)
-def say_list():
-    """Return a HTML page with the lists of States"""
-    from models.state import State
-    from models import storage
-    all_state = storage.all(State)
-    sort_dict = sorted(all_state.values(), key=lambda state: state.name)
-    return render_template("7-states_list.html", state=sort_dict)
+@app.route('/states_list', strict_slashes=False)
+def states_list():
+    states = storage.all(State)
+    return render_template('7-states_list.html', states=states)
 
 
 if __name__ == "__main__":
