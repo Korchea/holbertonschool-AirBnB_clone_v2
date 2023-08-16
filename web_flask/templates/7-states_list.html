@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<HTML lang="en">
+    <HEAD>
+        <TITLE>HBNB</TITLE>
+    </HEAD>
+    <BODY>
+        <H1>{{tables}}</H1>
+        <UL>
+
+            {% for id, name in {{states}} %}
+                <li><{{ id }}>: <B>{{ name }}</B></li>
+            {% endfor %}
+
+        </UL>
+    </BODY>
+</HTML>
