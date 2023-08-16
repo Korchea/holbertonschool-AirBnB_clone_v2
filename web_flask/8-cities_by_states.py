@@ -22,7 +22,7 @@ def teardown(exeption):
 def say_list():
     """Return a HTML page with the lists of States"""
     state = storage.all(State)
-    return render_template("8-cities_by_states.html", state=state)
+    return render_template("8-cities_by_states.html", states=state)
 
 
 if __name__ == "__main__":
