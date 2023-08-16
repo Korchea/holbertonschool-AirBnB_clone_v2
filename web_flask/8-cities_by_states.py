@@ -6,23 +6,23 @@
 """
 from flask import Flask, render_template
 from models.state import State
+from models.city import City
 from models import storage
 
 app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def teardown(exept):
+def teardown(exeption):
     """This def terdadown the database"""
     storage.close()
 
 
-@app.route("/states_list", strict_slashes=False)
+@app.route("/cities_by_states", strict_slashes=False)
 def say_list():
     """Return a HTML page with the lists of States"""
-    all_state = storage.all(State)
-    sort_dict = sorted(all_state.values(), key=lambda state: state.name)
-    return render_template("7-states_list.html", state=sort_dict)
+    state = storage.all(State)
+    return render_template("8-cities_by_states.html", state=state)
 
 
 if __name__ == "__main__":
