@@ -35,20 +35,16 @@ class DBStorage():
 
     def all(self, cls=None):
         """Queries current db all objects/all objects of class name"""
-        classes = [BaseModel, City, Place,
-                   Amenity, Review, State, User]
-
-        dictionary = {}
-        if cls:
-            for result in self.__session.query(eval(cls)).all():
-                key = "{}.{}".format(type(result).__name__, result.id)
-                dictionary[key] = result
+        diccionario = {}
+        if cls is None:
+            pass
         else:
-            for cla in classes:
-                for result in self.__session.query(eval(cla)).all():
-                    key = "{}.{}".format(result.__name__, result.id)
-                    dictionary[key] = result
-        return dictionary
+            objetos = self.__session.query(cls).all()
+
+        for objet in objetos:
+            key = f"{objet.__class__.__name__}.{objet.id}"
+            diccionario[key] = objet
+        return (diccionario)
 
     def new(self, obj):
         """Adds the object to current database session"""
