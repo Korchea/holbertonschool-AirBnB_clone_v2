@@ -21,8 +21,8 @@ def teardown(exept):
 def say_list():
     """Return a HTML page with the lists of States"""
     all_state = storage.all(State)
-    s_d = dict(sorted(all_state.items(), key=lambda item: item[1]))
-    return render_template("7-states_list.html", tab="States", state=s_d)
+    sort_dict = dict(sorted(all_state.items(), key=lambda item: item[1]))
+    return render_template("7-states_list.html", state=sort_dict)
 
 
 if __name__ == "__main__":
