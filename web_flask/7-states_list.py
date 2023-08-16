@@ -21,7 +21,7 @@ def teardown(exept):
 def say_list():
     """Return a HTML page with the lists of States"""
     all_state = storage.all(State)
-    sort_dict = dict(sorted(all_state.items(), key=lambda item: item[1]))
+    sort_dict = sorted(all_state.values(), key=lambda state: state.name)
     return render_template("7-states_list.html", state=sort_dict)
 
 
