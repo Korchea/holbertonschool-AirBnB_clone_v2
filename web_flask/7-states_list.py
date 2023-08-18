@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+"""This script starts a Flask web application
+
+    Returns:
+        Str: Hello HBNB
+"""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
@@ -8,6 +13,7 @@ app = Flask(__name__)
 
 @app.teardown_appcontext
 def rot7(excepetion):
+    """This def terdadown the database"""
     storage.close()
 
 
