@@ -34,17 +34,28 @@ class DBStorage():
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Queries current db all objects/all objects of class name"""
-        diccionario = {}
-        if cls is None:
-            pass
-        else:
-            objetos = self.__session.query(cls).all()
+        """Query on the current database session,
+        get all objects stored in the database for a specific
+        class or for all classes"""
 
-        for objet in objetos:
-            key = f"{objet.__class__.__name__}.{objet.id}"
-            diccionario[key] = objet
-        return (diccionario)
+        directory = {}
+        classes = [State, City, User, Place, Review, Amenity]
+
+        if cls is None:
+            for cls in classes:
+                objects = self.__session.query(cls).all()
+                for obj in objects:
+                    key = f'{obj.__class__.__name__}.{obj.id}'
+                    directory[key] = obj
+            return directory
+        elif cls in classes:
+            objects = self.__session.query(cls).all()
+            for obj in objects:
+                key = f'{obj.__class__.__name__}.{obj.id}'
+                directory[key] = obj
+            return directory
+        else:
+            return {}
 
     def new(self, obj):
         """Adds the object to current database session"""

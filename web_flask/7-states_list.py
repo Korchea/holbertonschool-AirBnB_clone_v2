@@ -1,28 +1,19 @@
-#!/usr/bin/python3
-"""This script starts a Flask web application
-
-    Returns:
-        Str: Hello HBNB
-"""
 from flask import Flask, render_template
-from models.state import State
 from models import storage
+from models.state import State
 
 app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def teardown(exept):
-    """This def terdadown the database"""
+def rot7(excepetion):
     storage.close()
 
 
-@app.route("/states_list", strict_slashes=False)
-def say_list():
-    """Return a HTML page with the lists of States"""
-    all_state = storage.all(State)
-    sort_dict = sorted(all_state.values(), key=lambda state: state.name)
-    return render_template("7-states_list.html", state=sort_dict)
+@app.route('/states_list', strict_slashes=False)
+def lista():
+    state = storage.all(State).values()
+    return render_template('7-states_list.html', state=state)
 
 
 if __name__ == "__main__":
